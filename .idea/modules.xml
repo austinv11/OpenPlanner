@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Core.iml" filepath="$PROJECT_DIR$/.idea/modules/Core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Launcher.iml" filepath="$PROJECT_DIR$/.idea/modules/Launcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Core/Core.iml" filepath="$PROJECT_DIR$/.idea/modules/Core/Core.iml" group="Core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Core/Core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Core/Core_main.iml" group="Core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Core/Core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Core/Core_test.iml" group="Core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Launcher/Launcher.iml" filepath="$PROJECT_DIR$/.idea/modules/Launcher/Launcher.iml" group="Launcher" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Launcher/Launcher_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Launcher/Launcher_main.iml" group="Launcher" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Launcher/Launcher_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Launcher/Launcher_test.iml" group="Launcher" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/OpenPlanner.iml" filepath="$PROJECT_DIR$/.idea/modules/OpenPlanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OpenPlanner_main.iml" filepath="$PROJECT_DIR$/.idea/modules/OpenPlanner_main.iml" group="OpenPlanner" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OpenPlanner_test.iml" filepath="$PROJECT_DIR$/.idea/modules/OpenPlanner_test.iml" group="OpenPlanner" />
     </modules>
   </component>
 </project>
