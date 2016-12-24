@@ -48,6 +48,7 @@
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.5" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.0.5" level="project" />
     <orderEntry type="library" name="Gradle: org.luaj:luaj-jse:3.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.5" level="project" />
     <orderEntry type="library" name="Gradle: nl.komponents.kovenant:kovenant-combine:3.3.0" level="project" />
     <orderEntry type="library" name="Gradle: nl.komponents.kovenant:kovenant-core:3.3.0" level="project" />

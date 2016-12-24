@@ -3,6 +3,7 @@ package com.austinv11.planner.core.scripting.lua
 import com.austinv11.planner.core.scripting.IPluginLanguage
 import com.austinv11.planner.core.scripting.LanguageManager
 import com.austinv11.planner.core.scripting.ScriptProcess
+import com.austinv11.planner.core.scripting.lua.apis.JsonAPI
 import org.luaj.vm2.lib.jse.JsePlatform
 
 object LuaPluginLanguage : IPluginLanguage {
@@ -16,7 +17,7 @@ object LuaPluginLanguage : IPluginLanguage {
     override val version: String = LanguageManager.API_SPEC_VERSION //Since this is a default/built-in language, this should always be up to date. If not, its a bug.
 
     init {
-        
+        registerAPI(JsonAPI)
     }
     
     override fun execute(script: String): ScriptProcess { //TODO: Sandbox executions
