@@ -16,7 +16,7 @@ object LuaPluginLanguage : IPluginLanguage {
     override val version: String = LanguageManager.API_SPEC_VERSION //Since this is a default/built-in language, this should always be up to date. If not, its a bug.
 
     init {
-        registerAPI(TestApi())
+        
     }
     
     override fun execute(script: String): ScriptProcess { //TODO: Sandbox executions

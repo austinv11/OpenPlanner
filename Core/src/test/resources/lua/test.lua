@@ -10,6 +10,3 @@ end
 
 printTable(_G, "Globals: ")
 print("Version: ".._VERSION)
-
-print(test.hello())
-print(test.author)

@@ -20,7 +20,7 @@ abstract class ILuaAPI {
     abstract val name: String
 
     /**
-     * This converts the [ILuaAPI] object into a [TwoArgFunction] object which can be used to represent an api in lua.
+     * This converts the [ILuaAPI] object into a [TwoArgFunction] object which is used to represent a global api in lua.
      * @return The [TwoArgFunction] object representing the api.
      */
     fun toLuaLib(): TwoArgFunction {
@@ -41,6 +41,34 @@ abstract class ILuaAPI {
                 env?.get("package")?.get("loaded")?.set(this@ILuaAPI.name, table)
                 return table
             }
+        }
+    }
+
+    /**
+     * This converts the [ILuaAPI] object into a [LuaValue] which can be returned by lua apis.
+     * @return The [LuaValue] which can be passed to a lua script.
+     */
+    fun toLuaObj(): LuaValue {
+        return object: LuaValue() {
+            val table = LuaTable() 
+            
+            init {
+                (this@ILuaAPI.javaClass.fields+this@ILuaAPI.javaClass.declaredFields).map {
+                    it.isAccessible = true
+                    return@map it
+                }.filter{
+                    it.isAnnotationPresent(Constant::class.java)
+                }.forEach {
+                    table.set(it.name, coerceWithTables(it.get(this@ILuaAPI)))
+                }
+
+                compileFunctions().forEach { k, v -> table.set(k, v) }
+            }
+            
+            override fun typename() = "userdata"
+            override fun type() = LuaValue.TUSERDATA
+            override fun tojstring() = this@ILuaAPI.name
+            override fun get(key: LuaValue): LuaValue = table.get(key)
         }
     }
     
@@ -203,6 +231,8 @@ fun coerceWithTables(obj: Any?): LuaValue {
     if (obj != null) {
         if (obj is LuaValue) {
             return obj
+        } else if (obj is ILuaAPI) {
+            return obj.toLuaObj()
         } else if (obj.javaClass.isArray) {
             val table = LuaTable()
             (obj as Array<*>).forEachIndexed { i, any -> 
