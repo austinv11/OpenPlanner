@@ -1,0 +1,15 @@
+{
+  "metadata": { //The repo metadata contains various data about the repo (keys are self-explanatory)
+    "name": "Test Plugin",
+    "icon": "http://test.com/images/repo_icon.png",
+    "author": "Austin",
+    "version": "1.0.0-SNAPSHOT",
+    "description": "This plugin tests OpenPlanner's scripting abilities."
+  },
+  "init_script": "__INIT__.lua", //This is a relative filepath to a script which is evaluated when the script is initialized for a user in a session
+  "resources": [ //This contains an array of relative filepaths to files which belong to this script. This is important as it allows for OpenPlanner to track files (changes) when installing/updating/uninstalling plugins
+    "./test_script1.lua",
+    "./test_script2.lua",
+    "./resources/reference.json"
+  ]
+}
