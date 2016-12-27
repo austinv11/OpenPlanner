@@ -10,6 +10,7 @@ end
 
 printTable(_G, "Globals: ")
 print("Version: ".._VERSION)
+print("API Version: ".._API_VERSION)
 
 local testJson = {test1="Hello", test2="World"}
 printTable(testJson, "Original Table:")

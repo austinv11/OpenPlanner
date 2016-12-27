@@ -14,13 +14,17 @@ object Config : IConfig {
     private var _backing = BackingConfigObject()
     
     init {
-        if (!FILE.exists()) {
-            val writer = FILE.writer()
-            GSON.toJson(_backing, writer)
-            writer.close()
-        } else {
+        if (FILE.exists()) {
             _backing = GSON.fromJson(FILE.readText(), BackingConfigObject::class.java)
         }
+            
+        save()
+    }
+    
+    fun save() {
+        val writer = FILE.writer()
+        GSON.toJson(_backing, writer)
+        writer.close()
     }
     
     override var max_user_count: Int by ConfigDelegate<Int>()
@@ -39,9 +43,7 @@ object Config : IConfig {
             val field = thisRef._backing.javaClass.kotlin.memberProperties.find { it.name == property.name }!!.javaField!!
             field.isAccessible = true
             field.set(thisRef._backing, value)
-            val writer = FILE.writer()
-            GSON.toJson(_backing, writer)
-            writer.close()
+            save()
         }
     }
     
