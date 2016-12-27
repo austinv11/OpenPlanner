@@ -93,7 +93,7 @@ object LocalPluginRepository : IPluginRepository {
 /**
  * This represents a remote plugin repository.
  */
-class RemotePluginRepository(private val url: String) : IPluginRepository {
+open class RemotePluginRepository(private val url: String) : IPluginRepository {
     
     override val lastUpdated: Long
         get() = _lastUpdated
@@ -157,8 +157,8 @@ class RemotePluginRepository(private val url: String) : IPluginRepository {
         return modifiedUrl
     }
     
-    fun downloadPlugin(plugin: Plugin) {
-        if (!_plugins.containsKey(plugin))
+    open fun downloadPlugin(plugin: Plugin) {
+        if (!managesPlugin(plugin))
             throw IllegalArgumentException("Plugin $plugin is not hosted on this repo!")
         
         val pluginDir = File(REPO_DIR, "${plugin.metadata.name}/${plugin.metadata.version}")
@@ -187,5 +187,38 @@ class RemotePluginRepository(private val url: String) : IPluginRepository {
             
             LocalPluginRepository.updateList()
         }
+    }
+    
+    fun managesPlugin(plugin: Plugin): Boolean {
+        return _plugins.containsKey(plugin)
+    }
+}
+
+
+class CombinedRemotePluginRepository(private val initialRepos: Array<RemotePluginRepository>): RemotePluginRepository("") {
+    
+    val repos: Array<RemotePluginRepository>
+        get() = _repos.toTypedArray()
+
+    override val lastUpdated: Long
+        get() = _lastUpdated
+    override val plugins: Array<Plugin>
+        get() {
+            var _plugins = arrayOf<Plugin>()
+            repos.forEach { _plugins += it.plugins }
+            return _plugins
+        }
+    override val metadata = RepoMetadata("Combined Repository [internal]", "null", "An internal implementation of a plugin repository which manages multiple remote plugin repositories.")
+    
+    private val _repos = mutableListOf(*initialRepos)
+    private var _lastUpdated: Long = -1
+
+    override fun updateList() {
+        repos.forEach { it.updateList() }
+        _lastUpdated = System.currentTimeMillis()
+    }
+    
+    override fun downloadPlugin(plugin: Plugin) {
+        _repos.find { it.managesPlugin(plugin) }?.downloadPlugin(plugin) ?: throw IllegalArgumentException("Plugin $plugin could not be found on any managed repo!")
     }
 }

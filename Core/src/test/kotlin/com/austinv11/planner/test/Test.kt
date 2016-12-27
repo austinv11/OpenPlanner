@@ -26,4 +26,7 @@ fun main(args: Array<String>) {
     println(Gson().toJson(remoteRepo.metadata))
     remoteRepo.downloadPlugin(remoteRepo.plugins[0])
     println(Gson().toJson(LocalPluginRepository.plugins[0]))
+    
+    //Tests local plugin installations
+    println(LocalPluginRepository.plugins[0])
 }
