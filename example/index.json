@@ -1,8 +1,8 @@
 {
   "metadata": { //The repo metadata contains various data about the repo (keys are self-explanatory)
     "name": "Austin's Test Plugin Repo",
-    "icon": "http://test.com/images/repo_icon.png",
+    "icon": "null",
     "description": "This repo contains test plugins for OpenPlanner."
   },
-  "plugins": ["http://test.com/plugins/TestPlugin/"] //The plugins array contains a list of direct links to plugins which are being "promoted"/distributed by this repo
+  "plugins": ["https://github.com/austinv11/OpenPlanner/tree/master/example/plugin_example/"] //The plugins array contains a list of direct links to plugins which are being "promoted"/distributed by this repo
 }

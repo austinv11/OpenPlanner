@@ -3,6 +3,8 @@ package com.austinv11.planner.core.plugins
 import com.austinv11.planner.core.json.Plugin
 import com.austinv11.planner.core.json.Repo
 import com.austinv11.planner.core.json.RepoMetadata
+import com.austinv11.planner.core.plugins.LocalPluginRepository.REPO_DIR
+import com.github.kittinunf.fuel.httpDownload
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
 import java.io.File
@@ -82,6 +84,7 @@ object LocalPluginRepository : IPluginRepository {
                     }
                 }
             }
+            
             _lastUpdated = System.currentTimeMillis()
         }
     }
@@ -138,7 +141,7 @@ class RemotePluginRepository(private val url: String) : IPluginRepository {
         }
     }
     
-    private fun normalizeUrl(parentUrl: String, startingUrl: String): String {
+    private fun normalizeUrl(parentUrl: String, startingUrl: String): String { //TODO: This is still prone to failure, let's hope in the meantime all plugin urls are  absolute
         var modifiedUrl: String = startingUrl
         
         if (!startingUrl.contains("://")) { //Missing protocol, assuming that this is a subdirectory of the original repo url
@@ -154,5 +157,35 @@ class RemotePluginRepository(private val url: String) : IPluginRepository {
             modifiedUrl += "index.json"
         
         return modifiedUrl
+    }
+    
+    fun downloadPlugin(plugin: Plugin) {
+        if (!_plugins.containsKey(plugin))
+            throw IllegalArgumentException("Plugin $plugin is not hosted on this repo!")
+        
+        val pluginDir = File(REPO_DIR, "${plugin.metadata.name}/${plugin.metadata.version}")
+        
+        if (!pluginDir.exists()) { //Skip download if the plugin already exists
+            pluginDir.mkdirs()
+            
+            File(pluginDir, "index.json").writeText(GSON.toJson(plugin)) //No need to download the index since it is already cached
+            
+            val baseUrl = _plugins[plugin]
+            
+            (plugin.resources + plugin.init_script).forEach { 
+                val filepath = it.removePrefix(".").removePrefix("/")
+                (baseUrl + filepath).httpDownload().destination { response, url -> 
+                    return@destination File(pluginDir, filepath)
+                }.responseString { request, response, result -> 
+                    result.fold({
+                        //Success
+                    },{
+                        throw IOException("Unable to download plugin resource from url ${request.url} (intended path: $filepath)")
+                    })
+                }
+            }
+            
+            LocalPluginRepository.updateList()
+        }
     }
 }
