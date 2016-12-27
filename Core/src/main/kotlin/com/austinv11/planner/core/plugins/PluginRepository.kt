@@ -172,15 +172,17 @@ class RemotePluginRepository(private val url: String) : IPluginRepository {
             
             (plugin.resources + plugin.init_script).forEach { 
                 val filepath = it.removePrefix(".").removePrefix("/")
-                (baseUrl + filepath).httpDownload().destination { response, url -> 
-                    return@destination File(pluginDir, filepath)
-                }.responseString { request, response, result -> 
-                    result.fold({
-                        //Success
-                    },{
-                        throw IOException("Unable to download plugin resource from url ${request.url} (intended path: $filepath)")
-                    })
-                }
+                val (request, response, result) = (baseUrl + filepath).httpDownload().destination { response, url ->
+                    val file = File(pluginDir, filepath)
+                    file.mkdirs()
+                    file.delete()
+                    return@destination file
+                }.responseString()
+                result.fold({
+                    //Success
+                },{
+                    throw IOException("Unable to download plugin resource from url ${request.url} (intended path: $filepath)")
+                })
             }
             
             LocalPluginRepository.updateList()
