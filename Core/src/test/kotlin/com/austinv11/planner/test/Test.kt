@@ -1,6 +1,9 @@
 package com.austinv11.planner.test
 
+import com.austinv11.planner.core.plugins.LocalPluginRepository
+import com.austinv11.planner.core.plugins.RemotePluginRepository
 import com.austinv11.planner.core.scripting.lua.LuaPluginLanguage
+import com.google.gson.Gson
 import java.io.File
 import kotlin.system.measureTimeMillis
 
@@ -16,4 +19,10 @@ fun main(args: Array<String>) {
         while (!process.isFinished) {}
     }
     println("Compiled! (Took $time ms)")   
+    
+    //Tests plugin installation:
+    val remoteRepo = RemotePluginRepository("https://raw.githubusercontent.com/austinv11/OpenPlanner/master/example/plugin_example/index.json")
+    println(Gson().toJson(remoteRepo.metadata))
+    remoteRepo.downloadPlugin(remoteRepo.plugins[0])
+    println(Gson().toJson(LocalPluginRepository.plugins[0]))
 }

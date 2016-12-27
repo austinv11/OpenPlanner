@@ -4,5 +4,5 @@
     "icon": "null",
     "description": "This repo contains test plugins for OpenPlanner."
   },
-  "plugins": ["https://github.com/austinv11/OpenPlanner/tree/master/example/plugin_example/"] //The plugins array contains a list of direct links to plugins which are being "promoted"/distributed by this repo
+  "plugins": ["https://raw.githubusercontent.com/austinv11/OpenPlanner/master/example/plugin_example/"] //The plugins array contains a list of direct links to plugins which are being "promoted"/distributed by this repo
 }
