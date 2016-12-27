@@ -21,8 +21,10 @@ fun main(args: Array<String>) {
     println("Compiled! (Took $time ms)")   
     
     //Tests plugin installation:
-    val remoteRepo = RemotePluginRepository("https://raw.githubusercontent.com/austinv11/OpenPlanner/master/example/plugin_example/index.json")
+    println("Testing plugin installation...")
+    val remoteRepo = RemotePluginRepository("https://raw.githubusercontent.com/austinv11/OpenPlanner/master/example/index.json")
     println(Gson().toJson(remoteRepo.metadata))
     remoteRepo.downloadPlugin(remoteRepo.plugins[0])
     println(Gson().toJson(LocalPluginRepository.plugins[0]))
+    LocalPluginRepository.REPO_DIR.deleteOnExit()
 }

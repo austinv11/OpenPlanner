@@ -115,24 +115,22 @@ class RemotePluginRepository(private val url: String) : IPluginRepository {
         synchronized(this) {
             _plugins.clear()
             
-            url.httpGet().responseString { request, response, result -> 
-                result.fold({
-                    _repo = GSON.fromJson(it, Repo::class.java)
-                },{
-                    throw IOException("Unable to retrieve repository listings for url: $url")
-                })
-            }
+            val (request, response, result) = url.httpGet().responseString()
+            result.fold({
+                _repo = GSON.fromJson(it, Repo::class.java)
+            },{
+                throw IOException("Unable to retrieve repository listings for url: $url")
+            })
             
             _repo.plugins.forEach { 
                 val pluginUrl = normalizeUrl(url, it)
-                
-                pluginUrl.httpGet().responseString { request, response, result ->
-                    result.fold({
-                        _plugins.put(GSON.fromJson(it, Plugin::class.java), pluginUrl.removeSuffix("index.json"))
-                    },{
-                        throw IOException("Unable to retrieve plugin index for url: $pluginUrl")
-                    })
-                }
+
+                val (request, response, result) = pluginUrl.httpGet().responseString()
+                result.fold({
+                    _plugins.put(GSON.fromJson(it, Plugin::class.java), pluginUrl.removeSuffix("index.json"))
+                },{
+                    throw IOException("Unable to retrieve plugin index for url: $pluginUrl")
+                })
             }
             
             //All plugin listings retrieved
