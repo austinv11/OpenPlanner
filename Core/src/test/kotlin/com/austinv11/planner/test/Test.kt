@@ -1,5 +1,6 @@
 package com.austinv11.planner.test
 
+import com.austinv11.planner.core.Config
 import com.austinv11.planner.core.plugins.LocalPluginRepository
 import com.austinv11.planner.core.plugins.RemotePluginRepository
 import com.austinv11.planner.core.scripting.lua.LuaPluginLanguage
@@ -29,4 +30,9 @@ fun main(args: Array<String>) {
     
     //Tests local plugin installations
     println(LocalPluginRepository.plugins[0])
+    
+    //Testing Config capabilities
+    println(Config.max_user_count)
+    Config.max_user_count = 1
+    println(Config.max_user_count)
 }
