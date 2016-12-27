@@ -221,4 +221,12 @@ class CombinedRemotePluginRepository(private val initialRepos: Array<RemotePlugi
     override fun downloadPlugin(plugin: Plugin) {
         _repos.find { it.managesPlugin(plugin) }?.downloadPlugin(plugin) ?: throw IllegalArgumentException("Plugin $plugin could not be found on any managed repo!")
     }
+    
+    fun addRepo(repo: RemotePluginRepository) {
+        _repos.add(repo)
+    }
+    
+    fun removeRepo(repo: RemotePluginRepository) {
+        _repos.remove(repo)
+    }
 }
