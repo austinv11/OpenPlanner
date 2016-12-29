@@ -2,6 +2,7 @@ package com.austinv11.planner.core.db
 
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
+import com.j256.ormlite.field.DataType
 import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.jdbc.JdbcConnectionSource
 import com.j256.ormlite.table.DatabaseTable
@@ -15,7 +16,7 @@ object DatabaseManager {
     /**
      * This is the url leading to the database.
      */
-    const val DATABASE_URL = "jdbc:h2:./database"
+    const val DATABASE_URL = "jdbc:sqlite:database.db"
     
     val CONNECTION_SOURCE = JdbcConnectionSource(DATABASE_URL)
     
@@ -31,14 +32,11 @@ object DatabaseManager {
         
         constructor()
 
-        constructor(id: Int, username: String, email: String, hash: ByteArray, salt: ByteArray, verified: Boolean, plugins: Array<String>) {
-            this.id = id
+        constructor(username: String, email: String, hash: ByteArray, salt: ByteArray) {
             this.username = username
             this.email = email
             this.hash = hash
             this.salt = salt
-            this.verified = verified
-            this.plugins = plugins
 
             //This constructor is only used by OpenPlanner, so its safe to immediately create in the DAO
             ACCOUNT_DAO.create(this)
@@ -64,16 +62,29 @@ object DatabaseManager {
         @DatabaseField(columnName = EMAIL, canBeNull = false)
         var email: String = ""
         
-        @DatabaseField(columnName = PASSWORD_HASH, canBeNull = false)
+        @DatabaseField(columnName = PASSWORD_HASH, canBeNull = false, dataType = DataType.BYTE_ARRAY)
         var hash: ByteArray = byteArrayOf()
         
-        @DatabaseField(columnName = PASSWORD_SALT, canBeNull = false)
+        @DatabaseField(columnName = PASSWORD_SALT, canBeNull = false, dataType = DataType.BYTE_ARRAY)
         var salt: ByteArray = byteArrayOf()
         
         @DatabaseField(columnName = VERIFIED, canBeNull = false)
         var verified: Boolean = false
         
-        @DatabaseField(columnName = PLUGINS, canBeNull = false)
-        var plugins: Array<String> = arrayOf()
+        @DatabaseField(columnName = PLUGINS, canBeNull = false, dataType = DataType.BYTE_ARRAY, useGetSet = true)
+        var plugins: ByteArray = byteArrayOf()
+            get() {
+                field = ByteArray(_plugins.size)
+                _plugins.forEachIndexed { i, plugin -> field[i] = plugin.toByte() }
+                return field
+            }
+            set(value) {
+                val pluginArray = kotlin.arrayOfNulls<String>(value.size)
+                value.forEachIndexed { i, byte -> pluginArray[i] = byte.toString() }
+                _plugins = pluginArray as Array<String>
+                field = value
+            }
+        
+        var _plugins: Array<String> = arrayOf()
     }
 }

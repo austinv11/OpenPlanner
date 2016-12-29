@@ -12,15 +12,23 @@
               <K2JSCompilerArguments />
             </option>
             <option name="_commonCompilerArguments">
-              <DummyImpl />
+              <DummyImpl>
+                <option name="pluginClasspaths">
+                  <array />
+                </option>
+                <option name="coroutinesWarn" value="true" />
+                <option name="pluginOptions">
+                  <array />
+                </option>
+              </DummyImpl>
             </option>
           </KotlinCompilerInfo>
         </option>
         <option name="useProjectSettings" value="true" />
         <option name="versionInfo">
           <KotlinVersionInfo>
-            <option name="apiLevel" value="1.1" />
-            <option name="languageLevel" value="1.1" />
+            <option name="apiLevel" value="1.0" />
+            <option name="languageLevel" value="1.0" />
             <option name="targetPlatformName" value="JVM 1.6" />
           </KotlinVersionInfo>
         </option>

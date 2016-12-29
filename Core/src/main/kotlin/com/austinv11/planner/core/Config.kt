@@ -27,7 +27,7 @@ object Config : IConfig {
         writer.close()
     }
     
-    override var max_user_count: Int by ConfigDelegate<Int>()
+    override var port: Int by ConfigDelegate<Int>()
     
     private class ConfigDelegate<T> {
         
@@ -47,9 +47,9 @@ object Config : IConfig {
         }
     }
     
-    private data class BackingConfigObject(override var max_user_count: Int = -1) : IConfig
+    private data class BackingConfigObject(override var port: Int = 3000) : IConfig
 }
 
 private interface IConfig {
-    var max_user_count: Int
+    var port: Int
 }
