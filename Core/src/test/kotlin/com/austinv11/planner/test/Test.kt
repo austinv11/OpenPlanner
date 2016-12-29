@@ -4,8 +4,10 @@ import com.austinv11.planner.core.Config
 import com.austinv11.planner.core.plugins.LocalPluginRepository
 import com.austinv11.planner.core.plugins.RemotePluginRepository
 import com.austinv11.planner.core.scripting.lua.LuaPluginLanguage
+import com.austinv11.planner.core.util.Security
 import com.google.gson.Gson
 import java.io.File
+import java.util.*
 import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
@@ -35,4 +37,19 @@ fun main(args: Array<String>) {
     println(Config.max_user_count)
     Config.max_user_count = 1
     println(Config.max_user_count)
+    
+    //Testing security
+    val salt = Security.generateSalt()
+    println("Salt: ${salt.string()}")
+    val initialString = "Hello World"
+    println("Initial string: $initialString")
+    val hashed = Security.hash(initialString, salt)
+    println("Hashed: ${hashed.string()}")
+    val toCompare = "Blah"
+    println("Comparison of $toCompare and ${hashed.string()}: ${Security.verify(hashed, toCompare, salt)}")
+    println("Comparison of $initialString and ${hashed.string()}: ${Security.verify(hashed, initialString, salt)}")
+}
+
+private fun ByteArray.string(): String {
+    return Arrays.toString(this).replace("[", "").replace("]", "").replace(", ", "")
 }

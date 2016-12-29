@@ -25,5 +25,7 @@ dependencies {
     compile "nl.komponents.kovenant:kovenant:3.3.0"
     compile "com.google.code.gson:gson:2.8.0"
     compile "com.github.kittinunf.fuel:fuel:1.3.1"
+    compile "com.h2database:h2:1.4.192"
+    compile "com.j256.ormlite:ormlite-jdbc:5.0"
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
