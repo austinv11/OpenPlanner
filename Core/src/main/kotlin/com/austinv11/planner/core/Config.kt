@@ -28,7 +28,10 @@ object Config : IConfig {
     }
     
     override var port: Int by ConfigDelegate<Int>()
-    
+    override var enforce_account_verification: Boolean by ConfigDelegate<Boolean>()
+    override var password_requirements_regex: String? by ConfigDelegate<String?>()
+    override var no_auth: Boolean by ConfigDelegate<Boolean>()
+
     private class ConfigDelegate<T> {
         
         operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
@@ -47,9 +50,29 @@ object Config : IConfig {
         }
     }
     
-    private data class BackingConfigObject(override var port: Int = 3000) : IConfig
+    private data class BackingConfigObject(override var port: Int = 3000,
+                                           override var enforce_account_verification: Boolean = true, 
+                                           override var password_requirements_regex: String? = null,
+                                           override var no_auth: Boolean = false) : IConfig
 }
 
 private interface IConfig {
+    /**
+     * This represents the port this server runs on.
+     */
     var port: Int
+    /**
+     * This represents whether the auth-flow will enforce account verification as a login requirement.
+     */
+    var enforce_account_verification: Boolean
+    /**
+     * This represents the regex used to determine if a password is valid for account creation, when null there is no
+     * password requirement check.
+     */
+    var password_requirements_regex: String?
+    /**
+     * This represents if the auth process is bypassed altogether on login (i.e. passwords are not checked to log into
+     * a user's account).
+     */
+    var no_auth: Boolean
 }
