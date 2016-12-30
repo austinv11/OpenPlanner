@@ -6,6 +6,8 @@ import com.austinv11.planner.core.json.responses.LoginResponse
 import com.austinv11.planner.core.networking.http.Routes
 import com.austinv11.planner.core.util.Security
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
+import io.netty.handler.codec.http.HttpContent
 import io.netty.handler.codec.http.HttpMethod
 import org.apache.commons.validator.routines.EmailValidator
 import org.wasabifx.wasabi.app.AppConfiguration
@@ -106,10 +108,14 @@ object Server {
                     response.setStatus(StatusCodes.OK)
                     return@registerRoute
                 }
-                HttpMethod.DELETE -> { //Delete account
-                    val user = request.bodyParams["user"].toString()
-                    val password = request.bodyParams["password"].toString()
+                HttpMethod.DELETE -> { //Delete account TODO: Replace gson content hack, this is currently due to a combination of https://github.com/wasabifx/wasabi/issues/107 and https://github.com/wasabifx/wasabi/issues/106
+                    val string = String((request.httpRequest as HttpContent).content().copy().array())
+                    val content = JsonParser().parse(string).asJsonObject
+//                    val user = request.bodyParams["user"].toString()
+//                    val password = request.bodyParams["password"].toString()
                     val token = request.rawHeaders["token"].toString()
+                    val user = content.get("user").asString
+                    val password = content.get("password").asString
                     val isEmail = EmailValidator.getInstance().isValid(user)
 
                     val queryResult = DatabaseManager.ACCOUNT_DAO
