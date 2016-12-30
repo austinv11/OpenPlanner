@@ -63,11 +63,11 @@ object Server {
             } else {
                 val account = queryResult.first() //Registration process should block a dupe username or email
                 val verification = Security.verify(account.hash, password, account.salt)
-                if (!verification) {
+                if (!verification && !Config.no_auth) {
                     response.setStatus(StatusCodes.Unauthorized, "Login failed.")
                     return@registerRoute
                 } else {
-                    if (!account.verified) {
+                    if (!account.verified && Config.enforce_account_verification) {
                         response.setStatus(StatusCodes.Forbidden, "Please verify your account.")
                         return@registerRoute
                     } else {
@@ -99,6 +99,12 @@ object Server {
                         return@registerRoute
                     } else if (emailQueryResult.size != 0) {
                         response.setStatus(StatusCodes.Forbidden, "Email $email already has an account.")
+                        return@registerRoute
+                    }
+                    
+                    if (Config.password_requirements_regex != null 
+                            && !request.bodyParams["password"].toString().matches(Regex(Config.password_requirements_regex!!))) {
+                        response.setStatus(StatusCodes.BadRequest, "Password does not match regex ${Config.password_requirements_regex}")
                         return@registerRoute
                     }
                     
