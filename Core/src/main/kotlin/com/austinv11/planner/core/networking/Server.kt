@@ -4,6 +4,7 @@ import com.austinv11.planner.core.Config
 import com.austinv11.planner.core.db.DatabaseManager
 import com.austinv11.planner.core.json.responses.CreateAccountResponse
 import com.austinv11.planner.core.json.responses.LoginResponse
+import com.austinv11.planner.core.json.responses.UserInfoResponse
 import com.austinv11.planner.core.networking.http.Routes
 import com.austinv11.planner.core.util.Security
 import com.austinv11.planner.core.util.deserialize
@@ -147,7 +148,7 @@ object Server {
                         val (sessionId, account2) = getSession(token) ?: -1 to null
                         val verification = Security.verify(account.hash, password, account.salt) && account == account2 && sessionId != -1
                         if (!verification) {
-                            response.setStatus(StatusCodes.Unauthorized, "Unauthorized!")
+                            response.setStatus(StatusCodes.Unauthorized, "Unauthorized")
                             return@registerRoute
                         } else {
                             //Delete account and remove all sessions
@@ -160,9 +161,15 @@ object Server {
                     }
                 }
                 HttpMethod.GET -> { //Get account info
-                    val token = request.rawHeaders["token"].toString() //TODO: token validation
+                    val token = request.rawHeaders["token"].toString()
+                    val session = getSession(token)
+                    if (session == null) {
+                        response.setStatus(StatusCodes.Unauthorized, "Bad token") 
+                        return@registerRoute
+                    }
                     
-                    //TODO: get user info from token
+                    val (sessionId, account) =  session
+                    response.send(UserInfoResponse(sessionId, account.username, account.email, account.verified, account._plugins).toJson(), Application.Json.contentType)
                 }
             }
         })
