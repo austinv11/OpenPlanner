@@ -1,5 +1,8 @@
 package com.austinv11.planner.core.util
 
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import java.security.Key
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
@@ -20,7 +23,7 @@ object Security {
      */
     fun hash(password: String): Pair<ByteArray, ByteArray> {
         val salt = generateSalt()
-        return Pair(salt, hash(password, salt))
+        return salt to hash(password, salt)
     }
 
     /**
@@ -51,5 +54,31 @@ object Security {
         val array = ByteArray(SALT_LENGTH)
         SHA1.nextBytes(array)
         return array
+    }
+
+    /**
+     * This generates a SHA-512 signed JWS string.
+     * @param key The key to sign with (must be SHA-512 encoded).
+     * @param claims The claims designated as the payload.
+     * @return The JWS string.
+     */
+    fun generateJWS(key: Key, claims: Map<String, Any?>): String {
+        return Jwts.builder()
+                .signWith(SignatureAlgorithm.HS512, key)
+                .setClaims(claims)
+                .compact()
+    }
+
+    /**
+     * This attempts to parse a signed JWS string.
+     * @param key The key used to sign the string.
+     * @param jws The JWS string to parse.
+     * @return The claims (body) of the jws string.
+     */
+    fun parseJWS(key: Key, jws: String): Map<String, Any?> {
+        return Jwts.parser()
+                .setSigningKey(key)
+                .parseClaimsJws(jws)
+                .body
     }
 }

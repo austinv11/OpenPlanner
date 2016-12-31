@@ -12,7 +12,7 @@ class ScriptProcess(val toExecute: ScriptProcess.() -> Unit) {
     /**
      * This is a mutable map representing the environment variables exposed to the script.
      */
-    val ENVIRONMENT_VARIABLES = mutableMapOf<String, Any?>(Pair("_API_VERSION", LanguageManager.API_SPEC_VERSION))
+    val ENVIRONMENT_VARIABLES = mutableMapOf<String, Any?>("_API_VERSION" to LanguageManager.API_SPEC_VERSION)
     /**
      * This returns true if the process is currently executing.
      */

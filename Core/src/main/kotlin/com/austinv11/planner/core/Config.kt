@@ -1,13 +1,15 @@
 package com.austinv11.planner.core
 
+import com.austinv11.planner.core.util.serialize
 import com.google.gson.GsonBuilder
+import io.jsonwebtoken.impl.crypto.MacProvider
 import java.io.File
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaField
 import kotlin.reflect.memberProperties
 
-object Config : IConfig {
+object Config : IConfig { //TODO: Secure the config file
 
     val FILE = File("./config.json")
     private val GSON = GsonBuilder().setPrettyPrinting().serializeNulls().create()
@@ -31,6 +33,8 @@ object Config : IConfig {
     override var enforce_account_verification: Boolean by ConfigDelegate<Boolean>()
     override var password_requirements_regex: String? by ConfigDelegate<String?>()
     override var no_auth: Boolean by ConfigDelegate<Boolean>()
+    override var signature_key: ByteArray by ConfigDelegate<ByteArray>()
+    override var token_expiration: Long by ConfigDelegate<Long>()
 
     private class ConfigDelegate<T> {
         
@@ -51,9 +55,11 @@ object Config : IConfig {
     }
     
     private data class BackingConfigObject(override var port: Int = 3000,
-                                           override var enforce_account_verification: Boolean = true, 
+                                           override var enforce_account_verification: Boolean = true,
                                            override var password_requirements_regex: String? = null,
-                                           override var no_auth: Boolean = false) : IConfig
+                                           override var no_auth: Boolean = false,
+                                           override var signature_key: ByteArray = MacProvider.generateKey().serialize(), 
+                                           override var token_expiration: Long = -1) : IConfig
 }
 
 private interface IConfig {
@@ -75,4 +81,14 @@ private interface IConfig {
      * a user's account).
      */
     var no_auth: Boolean
+    /**
+     * This is a key used to sign generated auth tokens. This is generated via a securely random generator and encoded 
+     * with SHA-512 by default on first init.
+     */
+    var signature_key: ByteArray
+    /**
+     * This is the time in hours before a token expires, -1 denotes that a token will never expire (unless the server
+     * session is reset).
+     */
+    var token_expiration: Long
 }

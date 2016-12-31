@@ -24,13 +24,14 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile "org.luaj:luaj-jse:3.0.1"
-    compile "nl.komponents.kovenant:kovenant:3.3.0"
-    compile "com.google.code.gson:gson:2.8.0"
-    compile "com.github.kittinunf.fuel:fuel:1.3.1"
-    compile "org.xerial:sqlite-jdbc:3.15.1"
-    compile "com.j256.ormlite:ormlite-jdbc:5.0"
-    compile "org.wasabifx:wasabi:0.3.120"
-    compile "commons-validator:commons-validator:1.5.1"
+    compile "org.luaj:luaj-jse:3.0.1" //Provides a plugin script interface
+    compile "nl.komponents.kovenant:kovenant:3.3.0" //Simplifies async
+    compile "com.google.code.gson:gson:2.8.0" //Json encoding/decoding
+    compile "com.github.kittinunf.fuel:fuel:1.3.1" //Http client
+    compile "org.xerial:sqlite-jdbc:3.15.1" //SQLLite JDBC provider
+    compile "com.j256.ormlite:ormlite-jdbc:5.0" //ORM wrapper for jdbc
+    compile "org.wasabifx:wasabi:0.3.120" //Http and ws server api
+    compile "commons-validator:commons-validator:1.5.1" //String validation
+    compile "io.jsonwebtoken:jjwt:0.7.0" //JWT Token encoding/decoding
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
